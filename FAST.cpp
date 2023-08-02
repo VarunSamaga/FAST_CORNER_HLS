@@ -88,30 +88,17 @@ void check_fp(ap_uint<8> fps[WIDTH], ap_uint<8> img[HEIGHT][WIDTH], const ap_uin
 		fps[c] = 0;
 		return;
 	}
-//
-//	d = 0;
-//	d |= tab[img[r][c] - img[r + offsets[4][0]][c + offsets[4][1]]];
-//	d |= tab[img[r][c] - img[r + offsets[12][0]][c + offsets[12][1]]];
-//	if(!d) {
-//		fps[c] = 0;
-//		return;
-//	}
 	d = cache[0];
 	ap_uint<4> count = cache[0] ? 1 : 0;
 
-// Fill the remaining points as the we need to check N contiguous points in the circle
+// Fill in the remaining points as we need to check N contiguous points in the circle
 	for(ap_uint<5> i = 16; i < 25; i++) {
 #pragma HLS UNROLL
 		cache[i] = cache[i - 16];
 	}
-//	ap_uint<4> count = 0;
 	for(ap_uint<5> i = 1; i < 25; i++) {
 #pragma HLS LOOP_TRIPCOUNT min=8 max=25
 #pragma HLS UNROLL
-//		if(i - count > 25 - N) {
-//			fps[c] = 0;
-//			return;
-//		}
 
 // Here d stores the state of last point (0,1,2)
 		if(d and (cache[i] == d)) {
